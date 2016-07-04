@@ -28,7 +28,7 @@ setup(
     author_email='hellysmile@gmail.com',
     version=about['__version__'],
     install_requires=[
-        'pep8',
+        'flake8',
     ],
     url='http://github.com/hellysmile/flake8-class',
     long_description=LONG_DESCRIPTION,

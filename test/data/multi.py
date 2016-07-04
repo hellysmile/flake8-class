@@ -2,7 +2,7 @@ class Bar:
     pass
 
 
-def bar():
+def bar(*args, **kwargs):
     return Bar
 
 
@@ -16,6 +16,7 @@ class Foo1(
 ):
     pass
 
+
 class Foo2(
     Bar,
     Foo,
@@ -28,6 +29,7 @@ class Foo3(
     Foo()
 ):
     pass
+
 
 class Foo4(
     Bar(),
@@ -68,7 +70,21 @@ class Foo9(Foo, Bar):
     pass
 
 
-class Foo9(
+class Foo10(
     Foo,
     Bar):
+    pass
+
+
+class Foo11(
+    Foo,
+    lambda: None
+):
+    pass
+
+
+class Foo12(
+    Foo,
+    bar('a', a='a')
+):
     pass

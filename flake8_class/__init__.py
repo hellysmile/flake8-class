@@ -1,18 +1,35 @@
+import re
 import tokenize
-from itertools import groupby
+from collections import Counter
+from lib2to3 import pytree
+from lib2to3.pgen2.driver import Driver
+from lib2to3.pygram import python_grammar
 
-import pep8
+try:
+    import pycodestyle as pep8
+except ImportError:
+    import pep8
 
 from flake8_class.__about__ import __version__
 
 
-class ClassException(Exception):
-    pass
+_driver = Driver(
+    grammar=python_grammar,
+    convert=pytree.convert,
+)
 
 
 class ClassChecker(object):
     name = __name__
     version = __version__
+
+    def C000(self, start_row, start_col):  # noqa
+        return {
+            'message': self.C000.message,
+            'line': start_row,
+            'col': start_col,
+        }
+    C000.message = 'C000 Fix class declaration.'
 
     def __init__(self, tree, filename='(none)', builtins=None):
         self.filename = filename
@@ -40,16 +57,6 @@ class ClassChecker(object):
                 if token.type == tokenize.COMMENT and token.string.endswith('noqa')]
 
     def get_class_errors(self, file_contents):
-        for error in self._get_class_errors(file_contents):
-            start_row, start_col = error
-
-            yield {
-                'message': 'C000 Fix class declaration.',
-                'line': start_row,
-                'col': start_col,
-            }
-
-    def _get_class_errors(self, file_contents):
         tokens = [Token(t) for t in tokenize.generate_tokens(lambda L=iter(file_contents): next(L))]
 
         gen = iter(tokens)
@@ -72,48 +79,64 @@ class ClassChecker(object):
 
             start_row, start_col = token.start
 
+            last_colon = False
+
             while True:
                 try:
                     token = next(gen)
                 except StopIteration:
                     raise NotImplementedError
                 else:
+                    if last_colon:
+                        if token.type == tokenize.NEWLINE:
+                            break
+
                     scope.append(token)
 
                     if token.string == ':':
-                        break
+                        last_colon = True
+                    else:
+                        last_colon = False
 
-            code = [el.string for el in scope][2:-1]
+            scope = scope[2:-1]
 
-            if not code:
+            if not scope:
                 continue
+
+            code = [el.string for el in scope]
 
             assert code[0] == '('
             assert code[-1] == ')'
 
             code = code[1:-1]
+            scope = scope[1:-1]
 
             if not code:
                 continue
 
             if '\n' != code[0]:
-                yield start_row, start_col
+                yield self.C000(start_row, start_col)
                 continue
 
-            separator = ','
+            nls = Counter(code)['\n']
 
-            parents = [list(y) for x, y in groupby(code, lambda z: z == separator) if not x]
+            source = ''.join(code).replace('\n', ',')
 
-            for parent in parents:
-                if '\n' != parent[0]:
-                    yield start_row, start_col
+            source = re.sub(r'\,{2}', ',', source)
+
+            if source[0] == ',':
+                source = ''.join(source.split()[1:])
+
+            source = '\nclass CLS(' + source + '):pass\n'
+
+            tree = _driver.parse_string(source)
+
+            nodes = len(tree.children[0].children[3].children)
+
+            if nodes != 0:
+                if nodes != nls:
+                    yield self.C000(start_row, start_col)
                     continue
-
-            ending = parents[-1]
-
-            if '\n' != ending[-1]:
-                yield start_row, start_col
-                continue
 
 
 class Token:
