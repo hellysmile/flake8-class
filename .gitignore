@@ -1,3 +1,5 @@
+env
+.eggs
 *.egg
 *.egg-info
 *.py[cod]

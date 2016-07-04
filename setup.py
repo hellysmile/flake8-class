@@ -18,32 +18,32 @@ def read(*filenames, **kwargs):
 LONG_DESCRIPTION = read(os.path.join(__dir__, 'README.rst'))
 
 about = {}
-with open(os.path.join(__dir__, 'flake8_quotes', '__about__.py')) as file:
+with open(os.path.join(__dir__, 'flake8_class', '__about__.py')) as file:
     exec(file.read(), about)
 
 
 setup(
-    name='flake8-quotes',
-    author='Zachary Wright Heller',
-    author_email='zheller@gmail.com',
+    name='flake8-class',
+    author='hellysmile',
+    author_email='hellysmile@gmail.com',
     version=about['__version__'],
     install_requires=[
         'pep8',
     ],
-    url='http://github.com/zheller/flake8-quotes/',
+    url='http://github.com/hellysmile/flake8-class',
     long_description=LONG_DESCRIPTION,
-    description='Flake8 lint for quotes.',
-    packages=['flake8_quotes'],
+    description='Flake8 lint for class declaration.',
+    packages=['flake8_class'],
     test_suite='test',
     include_package_data=True,
     entry_points={
         'flake8.extension': [
-            'flake8_quotes = flake8_quotes:QuoteChecker',
+            'flake8_class = flake8_class:ClassChecker',
         ],
     },
     license='MIT',
     zip_safe=True,
-    keywords='flake8 lint quotes',
+    keywords='flake8 lint class',
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Console',
@@ -52,9 +52,7 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Software Development :: Quality Assurance',
     ]
