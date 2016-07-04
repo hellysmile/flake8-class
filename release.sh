@@ -10,8 +10,8 @@ if test "$version" = ""; then
   exit 1
 fi
 
-# Bump the version via regexp
-sed -E "s/^(__version__ = ')[0-9]+\.[0-9]+\.[0-9]+(')$/\1$version\2/" flake8_class/__about__.py
+# Bump the version
+echo "__version__ = '$version'" > flake8_class/__about__.py
 
 # Verify our version made it into the file
 if ! grep "$version" flake8_class/__about__.py &> /dev/null; then
