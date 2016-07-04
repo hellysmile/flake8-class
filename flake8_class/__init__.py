@@ -27,7 +27,7 @@ class ClassChecker(object):
         file_contents = self.get_file_contents()
 
         noqa_line_numbers = self.get_noqa_lines(file_contents)
-        errors = self.get_quotes_errors(file_contents)
+        errors = self.get_class_errors(file_contents)
 
         for error in errors:
             if error.get('line') not in noqa_line_numbers:
