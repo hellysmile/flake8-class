@@ -11,16 +11,16 @@ if test "$version" = ""; then
 fi
 
 # Bump the version via regexp
-sed -E "s/^(__version__ = ')[0-9]+\.[0-9]+\.[0-9]+(')$/\1$version\2/" flake8_quotes/__about__.py --in-place
+sed -E "s/^(__version__ = ')[0-9]+\.[0-9]+\.[0-9]+(')$/\1$version\2/" flake8_class/__about__.py
 
 # Verify our version made it into the file
-if ! grep "$version" flake8_quotes/__about__.py &> /dev/null; then
+if ! grep "$version" flake8_class/__about__.py &> /dev/null; then
   echo "Expected \`__version__\` to update via \`sed\` but it didn't" 1>&2
   exit 1
 fi
 
 # Commit the change
-git add flake8_quotes/__about__.py
+git add flake8_class/__about__.py
 git commit -a -m "Release $version"
 
 # Tag the release
