@@ -3,13 +3,17 @@ import os
 from unittest import TestCase
 
 
-class TestChecks(TestCase):
+class TestChecks(
+    TestCase
+):
     def test_get_noqa_lines(self):
         checker = ClassChecker(None, filename=get_absolute_path('data/no_qa.py'))
         self.assertEqual(checker.get_noqa_lines(checker.get_file_contents()), [2])
 
 
-class DoublesTestChecks(TestCase):
+class DoublesTestChecks(
+    TestCase
+):
     def test_single_inheritance(self):
         checker = ClassChecker(None, filename=get_absolute_path('data/single.py'))
 
